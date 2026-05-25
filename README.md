@@ -67,26 +67,6 @@ bridge-grn transfer \
   --batch-size 32
 ```
 
-For a faster CPU smoke test, reduce the hidden dimensions:
-
-```bash
-bridge-grn train \
-  --expression examples/real_data_demo/expression.csv \
-  --tf-list examples/real_data_demo/tf_list.txt \
-  --train-edges examples/real_data_demo/train_edges.csv \
-  --val-edges examples/real_data_demo/val_edges.csv \
-  --test-edges examples/real_data_demo/test_edges.csv \
-  --output-dir outputs/smoke_test \
-  --epochs 1 \
-  --batch-size 16 \
-  --hidden1 16 \
-  --hidden2 8 \
-  --hidden3 8 \
-  --output-dim 4 \
-  --num-head1 1 \
-  --num-head2 1
-```
-
 ## Input Format
 
 BRIDGE-GRN expects:
@@ -110,7 +90,3 @@ Training and transfer workflows write:
 Prediction writes:
 
 - a CSV containing query edges and BRIDGE-GRN scores
-
-## Citation
-
-If you use BRIDGE-GRN, please cite the associated manuscript and the software release. A `CITATION.cff` file is included for software citation metadata.
