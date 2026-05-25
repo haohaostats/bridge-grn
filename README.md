@@ -2,26 +2,16 @@
 
 BRIDGE-GRN is a role-aware graph learning framework for directed gene regulatory network inference from single-cell gene expression data and TF-target supervision.
 
-This repository is intended to release the **BRIDGE-GRN method** itself. It contains the model implementation, training and prediction workflows, transfer fine-tuning utilities, input-format documentation, and a small real-data demonstration subset. It is not a manuscript figure-reproduction repository.
+This repository provides the BRIDGE-GRN model implementation, training and prediction workflows, transfer fine-tuning utilities, input-format documentation, and a real-data demonstration subset.
 
-## Repository Scope
+## Features
 
-Included:
-
-- BRIDGE-GRN model implementation
+- BRIDGE-GRN model implementation for directed TF-target prediction
 - Role-specific TF and target embedding towers
 - Cross-view contrastive regularization with edge perturbation
 - Command-line training, prediction, and transfer fine-tuning
-- A real-data demonstration subset derived from the mESC benchmark
+- Real-data demonstration files derived from the mESC benchmark
 - Documentation for expected input formats
-
-Not included:
-
-- Manuscript figure plotting scripts
-- Full figure source-data tables
-- Full supplementary figure/table reproduction pipelines
-- Temporary exploratory scripts
-- Downstream scClassify2 exploratory analyses
 
 ## Installation
 
@@ -34,7 +24,7 @@ pip install -e .
 
 ## Quick Start With Real Data
 
-The repository includes a small real-data demonstration subset under `examples/real_data_demo/`.
+The repository includes a real-data demonstration under `examples/real_data_demo/`.
 
 Train BRIDGE-GRN:
 
@@ -124,4 +114,3 @@ Prediction writes:
 ## Citation
 
 If you use BRIDGE-GRN, please cite the associated manuscript and the software release. A `CITATION.cff` file is included for software citation metadata.
-

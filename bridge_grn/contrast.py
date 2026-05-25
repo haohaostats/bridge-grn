@@ -52,7 +52,7 @@ class _InfoNCE(nn.Module):
 class DualBranchContrast(nn.Module):
     def __init__(self, loss: nn.Module, mode: str = 'L2L', intraview_negs: bool = False):
         super().__init__()
-        assert mode in ('L2L',), "This minimal implementation only supports mode='L2L'."
+        assert mode in ('L2L',), "BRIDGE-GRN currently supports mode='L2L'."
         self.loss_fn = loss
         self.mode = mode
         self.intraview_negs = intraview_negs  

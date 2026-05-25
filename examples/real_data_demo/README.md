@@ -1,12 +1,12 @@
 # Real-Data Demo
 
-This folder contains a small real-data subset derived from the mESC benchmark used in the BRIDGE-GRN study:
+This folder contains a real-data subset derived from the mESC benchmark used in the BRIDGE-GRN study:
 
 ```text
 mESC / Specific Dataset / TFs+500 / sample1
 ```
 
-The files are intended to demonstrate the BRIDGE-GRN workflow on real expression and TF-target supervision data without requiring the full benchmark collection.
+The files demonstrate the BRIDGE-GRN workflow on real expression and TF-target supervision data.
 
 Files:
 
@@ -31,4 +31,3 @@ bridge-grn train \
   --epochs 5 \
   --batch-size 32
 ```
-
