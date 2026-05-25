@@ -1,0 +1,9 @@
+field,value
+source_dataset,"mESC, Specific Dataset, TFs+500, sample1"
+expression_genes,243
+expression_cells,421
+train_edges,100
+val_edges,40
+test_edges,60
+query_edges,25
+tf_count,74

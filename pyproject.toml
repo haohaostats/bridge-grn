@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bridge-grn"
+version = "0.1.0"
+description = "BRIDGE-GRN for directed gene regulatory network inference from single-cell expression data."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+  {name = "Hao Chen"},
+  {name = "Wenze Ding"}
+]
+dependencies = [
+  "numpy>=1.23",
+  "pandas>=1.5",
+  "scipy>=1.10",
+  "scikit-learn>=1.2",
+  "torch>=2.0"
+]
+
+[project.scripts]
+bridge-grn = "bridge_grn.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["bridge_grn*"]

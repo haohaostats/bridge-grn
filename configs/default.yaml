@@ -1,0 +1,22 @@
+# Reference hyperparameters for BRIDGE-GRN.
+# The command-line interface currently accepts these values as CLI flags.
+
+lr: 0.003
+epochs: 20
+batch_size: 256
+hidden1: 128
+hidden2: 64
+hidden3: 32
+output_dim: 16
+num_head1: 3
+num_head2: 3
+alpha: 0.2
+decoder: dot
+reduction: concate
+lambda_ctr: 0.5
+edge_drop: 0.2
+pre_epochs: 0
+share_tower: false
+svd_dim: 0
+normalize_expression: true
+

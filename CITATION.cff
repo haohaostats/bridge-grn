@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the BRIDGE-GRN software implementation."
+title: "BRIDGE-GRN Open Implementation"
+type: software
+license: MIT
+abstract: "Open-source implementation of BRIDGE-GRN for directed gene regulatory network inference from gene expression data and TF-target supervision."
+keywords:
+  - gene regulatory network
+  - graph neural network
+  - single-cell analysis
+  - transfer learning
+  - transcription factor
