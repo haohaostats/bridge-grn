@@ -2,7 +2,7 @@
 
 BRIDGE-GRN is a role-aware graph learning framework for directed gene regulatory network inference from single-cell gene expression data and TF-target supervision.
 
-This repository provides the BRIDGE-GRN model implementation, training and prediction workflows, transfer fine-tuning utilities, input-format documentation, real benchmark data, and real-data workflow examples.
+This repository provides the BRIDGE-GRN model implementation, training and prediction workflows, transfer fine-tuning utilities, input-format documentation, benchmark data, and workflow examples.
 
 ## Features
 
@@ -11,7 +11,7 @@ This repository provides the BRIDGE-GRN model implementation, training and predi
 - Cross-view contrastive regularization with edge perturbation
 - Command-line training, prediction, and transfer fine-tuning
 - Benchmark expression matrices, regulatory labels, and train/validation/test splits
-- Real-data workflow files derived from the mESC benchmark
+- Workflow files derived from the mESC benchmark
 - Documentation for expected input formats
 
 ## Installation
@@ -23,20 +23,20 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Quick Start With Real Data
+## Quick Start
 
-The repository includes a real-data workflow under `examples/real_data_demo/`.
+The repository includes a workflow example under `examples/demo/`.
 
 Train BRIDGE-GRN:
 
 ```bash
 bridge-grn train \
-  --expression examples/real_data_demo/expression.csv \
-  --tf-list examples/real_data_demo/tf_list.txt \
-  --train-edges examples/real_data_demo/train_edges.csv \
-  --val-edges examples/real_data_demo/val_edges.csv \
-  --test-edges examples/real_data_demo/test_edges.csv \
-  --output-dir outputs/real_data_demo \
+  --expression examples/demo/expression.csv \
+  --tf-list examples/demo/tf_list.txt \
+  --train-edges examples/demo/train_edges.csv \
+  --val-edges examples/demo/val_edges.csv \
+  --test-edges examples/demo/test_edges.csv \
+  --output-dir outputs/demo \
   --epochs 5 \
   --batch-size 32
 ```
@@ -45,12 +45,12 @@ Predict candidate TF-target edge scores:
 
 ```bash
 bridge-grn predict \
-  --checkpoint outputs/real_data_demo/bridge_grn_best.pt \
-  --expression examples/real_data_demo/expression.csv \
-  --tf-list examples/real_data_demo/tf_list.txt \
-  --support-edges examples/real_data_demo/train_edges.csv \
-  --query-edges examples/real_data_demo/query_edges.csv \
-  --output outputs/real_data_demo/query_predictions.csv
+  --checkpoint outputs/demo/bridge_grn_best.pt \
+  --expression examples/demo/expression.csv \
+  --tf-list examples/demo/tf_list.txt \
+  --support-edges examples/demo/train_edges.csv \
+  --query-edges examples/demo/query_edges.csv \
+  --output outputs/demo/query_predictions.csv
 ```
 
 Fine-tune from a source checkpoint:
@@ -58,12 +58,12 @@ Fine-tune from a source checkpoint:
 ```bash
 bridge-grn transfer \
   --checkpoint outputs/source_run/bridge_grn_best.pt \
-  --expression examples/real_data_demo/expression.csv \
-  --tf-list examples/real_data_demo/tf_list.txt \
-  --train-edges examples/real_data_demo/train_edges.csv \
-  --val-edges examples/real_data_demo/val_edges.csv \
-  --test-edges examples/real_data_demo/test_edges.csv \
-  --output-dir outputs/real_data_transfer \
+  --expression examples/demo/expression.csv \
+  --tf-list examples/demo/tf_list.txt \
+  --train-edges examples/demo/train_edges.csv \
+  --val-edges examples/demo/val_edges.csv \
+  --test-edges examples/demo/test_edges.csv \
+  --output-dir outputs/transfer \
   --epochs 3 \
   --batch-size 32
 ```
