@@ -2,7 +2,7 @@
 
 ## Expression Matrix
 
-The expression matrix must be a CSV or TSV file with genes in rows and cells or samples in columns. The first column is used as the gene identifier index.
+The expression matrix must be a CSV, CSV.GZ, or TSV file with genes in rows and cells or samples in columns. The first column is used as the gene identifier index.
 
 ```text
 ,cell_1,cell_2,cell_3
@@ -22,7 +22,7 @@ GeneA
 GeneC
 ```
 
-or a CSV file containing either a single column or a column named `tf`.
+or a CSV file containing either a single column or a column named `tf`/`TF`.
 
 ## Edge Files
 
@@ -51,4 +51,3 @@ GeneC,GeneD
 ```
 
 The `--support-edges` file passed to `bridge-grn predict` should contain the positive edges used to construct the support graph. If it also contains negative edges, only rows with `label = 1` are used for graph construction.
-

@@ -2,7 +2,7 @@
 
 BRIDGE-GRN is a role-aware graph learning framework for directed gene regulatory network inference from single-cell gene expression data and TF-target supervision.
 
-This repository provides the BRIDGE-GRN model implementation, training and prediction workflows, transfer fine-tuning utilities, input-format documentation, and a real-data demonstration subset.
+This repository provides the BRIDGE-GRN model implementation, training and prediction workflows, transfer fine-tuning utilities, input-format documentation, real benchmark data, and real-data workflow examples.
 
 ## Features
 
@@ -10,7 +10,8 @@ This repository provides the BRIDGE-GRN model implementation, training and predi
 - Role-specific TF and target embedding towers
 - Cross-view contrastive regularization with edge perturbation
 - Command-line training, prediction, and transfer fine-tuning
-- Real-data demonstration files derived from the mESC benchmark
+- Benchmark expression matrices, regulatory labels, and train/validation/test splits
+- Real-data workflow files derived from the mESC benchmark
 - Documentation for expected input formats
 
 ## Installation
@@ -24,7 +25,7 @@ pip install -e .
 
 ## Quick Start With Real Data
 
-The repository includes a real-data demonstration under `examples/real_data_demo/`.
+The repository includes a real-data workflow under `examples/real_data_demo/`.
 
 Train BRIDGE-GRN:
 
@@ -78,6 +79,16 @@ BRIDGE-GRN expects:
 Both `tf` and `target` may be gene names or zero-based integer indices. Gene names are recommended for portability.
 
 See `docs/input_format.md` for details.
+
+## Data
+
+The benchmark data used with BRIDGE-GRN are provided under `data/`:
+
+- `data/benchmark_datasets/`: expression matrices, TF lists, target lists, regulatory labels, and prior-network files
+- `data/splits/`: train, validation, and test edge splits
+- `data/manifest.csv`: file-level manifest
+
+CSV files are stored as `.csv.gz` files. They can be read directly with `pandas.read_csv`.
 
 ## Outputs
 

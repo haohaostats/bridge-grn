@@ -1,6 +1,6 @@
 # Real-Data Demo
 
-This folder contains a real-data subset derived from the mESC benchmark used in the BRIDGE-GRN study:
+This folder contains real-data workflow files derived from the mESC benchmark used in the BRIDGE-GRN study:
 
 ```text
 mESC / Specific Dataset / TFs+500 / sample1

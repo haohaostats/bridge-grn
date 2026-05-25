@@ -40,10 +40,11 @@ def load_tf_list(tf_list_path: str | Path) -> List[str]:
     if path.suffix.lower() == '.txt':
         return [line.strip() for line in path.read_text(encoding='utf-8').splitlines() if line.strip()]
     df = pd.read_csv(path)
+    lower_map = {str(c).lower(): c for c in df.columns}
+    if 'tf' in lower_map:
+        return df[lower_map['tf']].astype(str).tolist()
     if df.shape[1] == 1:
         return df.iloc[:, 0].astype(str).tolist()
-    if 'tf' in df.columns:
-        return df['tf'].astype(str).tolist()
     return df.iloc[:, 0].astype(str).tolist()
 
 
