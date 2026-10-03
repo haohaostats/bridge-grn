@@ -32,6 +32,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data/epiblast")
     parser.add_argument("--network-dir", type=Path, default=ROOT / "data/networks")
+    parser.add_argument("--reference-dir", type=Path, default=ROOT / "data/input_references")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "outputs/epiblast")
     parser.add_argument("--seeds", type=int, nargs="+", default=list(range(2025, 2031)))
     parser.add_argument("--folds", type=int, default=5)
@@ -75,14 +76,37 @@ def score_features(train, test, y_train, y_test, n_classes):
     }
 
 
+def reference_edges(path, cap, seed):
+    frame = pd.read_csv(path)[["TF", "Target"]].drop_duplicates()
+    frame["TF"] = frame.TF.astype(str).str.upper()
+    frame["Target"] = frame.Target.astype(str).str.upper()
+    frame = frame.loc[frame.TF.ne(frame.Target)]
+    if cap is not None:
+        rng = np.random.default_rng(seed)
+        groups = []
+        for _, group in frame.groupby("TF", sort=True):
+            if len(group) > cap:
+                group = group.iloc[np.sort(rng.choice(len(group), cap, replace=False))]
+            groups.append(group)
+        frame = pd.concat(groups, ignore_index=True)
+    frame["Score"] = 1.0
+    return frame
+
+
 def main():
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     expression, genes, labels, stages = load_expression(args.data_dir, args.normalization)
     networks = {}
+    references = {}
     for sample in range(1, 6):
         path = args.network_dir / f"mESC_sample{sample}_top128.csv.gz"
         networks[sample] = top_k_per_tf(pd.read_csv(path), args.top_k)
+        reference_path = args.reference_dir / f"mESC_sample{sample}_train_positive_reference.csv.gz"
+        references[sample] = {
+            "input-reference-full": reference_edges(reference_path, None, 9000 + sample),
+            "input-reference-cap128": reference_edges(reference_path, args.top_k, 9000 + sample),
+        }
 
     rows = []
     for seed in args.seeds:
@@ -111,6 +135,7 @@ def main():
                     "randomized-target": randomize_targets(inferred, genes, control_seed),
                     "degree-preserving": degree_preserving_rewire(inferred, control_seed),
                     "reversed": reverse_edges(inferred),
+                    **references[sample],
                 }
                 for condition, edges in conditions.items():
                     adjacency = build_adjacency(edges, selected_genes)

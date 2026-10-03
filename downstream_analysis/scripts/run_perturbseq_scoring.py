@@ -25,6 +25,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--profile", type=Path, default=ROOT / "data/perturbseq/response_profiles.npz")
     parser.add_argument("--network-dir", type=Path, default=ROOT / "data/networks")
+    parser.add_argument("--reference-dir", type=Path, default=ROOT / "data/input_references")
     parser.add_argument("--universe-dir", type=Path, default=ROOT / "data/gene_universes")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "outputs/perturbseq")
     parser.add_argument("--top-k-per-tf", type=int, default=128)
@@ -61,6 +62,28 @@ def evaluate(target, genes, delta, edges, response_set_size):
     }
 
 
+def load_reference(path):
+    frame = pd.read_csv(path)
+    if "OriginalReferenceScore" in frame.columns:
+        frame = frame.rename(columns={"OriginalReferenceScore": "Score"})
+    else:
+        frame["Score"] = 1.0
+    return frame[["TF", "Target", "Score"]]
+
+
+def match_outdegree(reference, inferred):
+    counts = inferred.groupby("TF").size().to_dict()
+    groups = []
+    ordered = reference.sort_values(["TF", "Score", "Target"], ascending=[True, False, True], kind="stable")
+    for tf, group in ordered.groupby("TF", sort=False):
+        number = int(counts.get(tf, 0))
+        if number:
+            groups.append(group.head(number))
+    if not groups:
+        return reference.iloc[:0][["TF", "Target", "Score"]]
+    return pd.concat(groups, ignore_index=True)[["TF", "Target", "Score"]]
+
+
 def main():
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -82,6 +105,9 @@ def main():
                 pd.read_csv(args.network_dir / f"{family}_sample{sample}_top128.csv.gz"),
                 args.top_k_per_tf,
             )
+            reference = load_reference(
+                args.reference_dir / f"{family}_sample{sample}_train_positive_reference.csv.gz"
+            )
             matched_targets = [target for target in target_names if (inferred.TF == target).any()]
             seed = args.seed + sample + (100 if family == "mHSC-GM" else 0)
             conditions = {
@@ -89,6 +115,8 @@ def main():
                 "randomized-target": randomize_targets(inferred, genes, seed),
                 "degree-preserving": degree_preserving_rewire(inferred, seed),
                 "reversed": reverse_edges(inferred),
+                "input-reference-full": reference,
+                "input-reference-degree-matched": match_outdegree(reference, inferred),
             }
             for target in matched_targets:
                 delta = deltas[target][positions]
