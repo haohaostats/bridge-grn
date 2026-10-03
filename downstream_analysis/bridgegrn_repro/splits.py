@@ -87,3 +87,60 @@ def sample_unlabeled_negatives(
     rng = np.random.default_rng(seed)
     take = rng.choice(len(candidates), size=number, replace=False)
     return pd.DataFrame([candidates[i] for i in take], columns=["TF", "Target"]).assign(Label=0)
+
+
+def split_sampled_network(
+    positives: pd.DataFrame,
+    genes: list[str],
+    tfs: list[str],
+    density: float,
+    seed: int,
+    singleton_train_probability: float = 0.5,
+) -> dict[str, pd.DataFrame]:
+    rng = np.random.default_rng(seed)
+    positives = positives[["TF", "Target"]].drop_duplicates().copy()
+    positives["TF"] = positives.TF.astype(str).str.upper()
+    positives["Target"] = positives.Target.astype(str).str.upper()
+    positives = positives.loc[positives.TF.ne(positives.Target)]
+    genes = np.asarray(sorted({str(x).upper() for x in genes}), dtype=object)
+    tfs = np.asarray(sorted({str(x).upper() for x in tfs}), dtype=object)
+    known = set(map(tuple, positives.itertuples(index=False, name=None)))
+    positive_maps = {"train": [], "validation": [], "test": []}
+    for tf, group in positives.groupby("TF", sort=True):
+        targets = group.Target.to_numpy(object)
+        rng.shuffle(targets)
+        degree = len(targets)
+        if degree == 1:
+            key = "train" if rng.random() <= singleton_train_probability else "test"
+            positive_maps[key].append((tf, targets[0]))
+        elif degree == 2:
+            positive_maps["train"].append((tf, targets[0]))
+            positive_maps["test"].append((tf, targets[1]))
+        else:
+            train_end = degree * 2 // 3
+            validation_end = train_end // 5
+            positive_maps["validation"].extend((tf, x) for x in targets[:validation_end])
+            positive_maps["train"].extend((tf, x) for x in targets[validation_end:train_end])
+            positive_maps["test"].extend((tf, x) for x in targets[train_end:])
+    negative_maps = {"train": [], "validation": [], "test": []}
+    used = set()
+    for split in ("train", "validation"):
+        frame = pd.DataFrame(positive_maps[split], columns=["TF", "Target"])
+        for tf, group in frame.groupby("TF", sort=True):
+            candidates = [(tf, gene) for gene in genes if gene != tf and (tf, gene) not in known and (tf, gene) not in used]
+            take = rng.choice(len(candidates), size=len(group), replace=False)
+            selected = [candidates[index] for index in take]
+            negative_maps[split].extend(selected)
+            used.update(selected)
+    test_positive_count = len(positive_maps["test"])
+    test_negative_count = int(test_positive_count // density - test_positive_count)
+    candidates = [(tf, gene) for tf in tfs for gene in genes
+                  if tf != gene and (tf, gene) not in known and (tf, gene) not in used]
+    take = rng.choice(len(candidates), size=test_negative_count, replace=False)
+    negative_maps["test"] = [candidates[index] for index in take]
+    output = {}
+    for split in ("train", "validation", "test"):
+        positive_frame = pd.DataFrame(positive_maps[split], columns=["TF", "Target"]).assign(Label=1)
+        negative_frame = pd.DataFrame(negative_maps[split], columns=["TF", "Target"]).assign(Label=0)
+        output[split] = pd.concat([positive_frame, negative_frame], ignore_index=True)
+    return output

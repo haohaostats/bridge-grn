@@ -14,7 +14,7 @@ from bridgegrn_repro.network import (
     randomize_targets,
     reverse_edges,
 )
-from bridgegrn_repro.splits import split_specific_hard_negatives              
+from bridgegrn_repro.splits import split_sampled_network, split_specific_hard_negatives
 
 
 def example_edges():
@@ -66,4 +66,23 @@ def test_split_is_deterministic_and_disjoint():
         labeled[key] = pairs
         known = set(map(tuple, positives.itertuples(index=False, name=None)))
         negatives = set(map(tuple, frame.loc[frame.Label.eq(0), ["TF", "Target"]].itertuples(index=False, name=None)))
+        assert negatives.isdisjoint(known)
+
+
+def test_sampled_split_is_deterministic_and_disjoint():
+    positives = pd.DataFrame({
+        "TF": ["A"] * 4 + ["B"] * 3,
+        "Target": ["B", "C", "D", "E", "A", "C", "D"],
+    })
+    genes = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    first = split_sampled_network(positives, genes, ["A", "B"], 0.5, 13)
+    second = split_sampled_network(positives, genes, ["A", "B"], 0.5, 13)
+    known = set(map(tuple, positives.itertuples(index=False, name=None)))
+    used = set()
+    for key in first:
+        pd.testing.assert_frame_equal(first[key], second[key])
+        pairs = set(map(tuple, first[key][["TF", "Target"]].itertuples(index=False, name=None)))
+        assert pairs.isdisjoint(used)
+        used |= pairs
+        negatives = set(map(tuple, first[key].loc[first[key].Label.eq(0), ["TF", "Target"]].itertuples(index=False, name=None)))
         assert negatives.isdisjoint(known)
