@@ -6,8 +6,13 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
 
-for script in ("run_epiblast_annotation.py", "run_perturbseq_scoring.py"):
-    command = [sys.executable, str(HERE / script)]
-    print("RUN", " ".join(command), flush=True)
+commands = [
+    [sys.executable, str(HERE / "run_epiblast_annotation.py"), "--normalization", "logcpm"],
+    [sys.executable, str(HERE / "run_perturbseq_scoring.py")],
+    [sys.executable, str(HERE / "summarize_downstream.py"), "--output-dir", str(ROOT / "outputs")],
+]
+
+for command in commands:
     subprocess.run(command, check=True)

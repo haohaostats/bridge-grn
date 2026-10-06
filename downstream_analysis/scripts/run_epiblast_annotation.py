@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument("--training-cells-per-state", type=int, default=64)
     parser.add_argument("--selected-genes", type=int, default=600)
     parser.add_argument("--top-k", type=int, default=128)
-    parser.add_argument("--normalization", choices=["raw", "logcpm"], default="raw")
+    parser.add_argument("--normalization", choices=["raw", "logcpm"], default="logcpm")
     return parser.parse_args()
 
 
