@@ -1,5 +1,5 @@
 {
-  "title": "BRIDGE-GRN v1.0.0: code and benchmark data",
+  "title": "Role-factorized graph learning enables transferable and interpretable directed regulatory network inference from single-cell transcriptomes",
   "license": "MIT",
   "description": "Code and benchmark data for Role-factorized graph learning enables transferable and interpretable directed regulatory network inference from single-cell transcriptomes.",
   "upload_type": "software",
