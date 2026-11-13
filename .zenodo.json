@@ -1,0 +1,16 @@
+{
+  "title": "BRIDGE-GRN v1.0.0: code and benchmark data",
+  "license": "MIT",
+  "description": "Code and benchmark data for Role-factorized graph learning enables transferable and interpretable directed regulatory network inference from single-cell transcriptomes.",
+  "upload_type": "software",
+  "creators": [
+    {
+      "affiliation": "School of Mathematics and Statistics, The University of Sydney",
+      "name": "Chen, Hao"
+    },
+    {
+      "affiliation": "School of Mathematics and Statistics and Charles Perkins Centre, The University of Sydney",
+      "name": "Ding, Wenze"
+    }
+  ]
+}
